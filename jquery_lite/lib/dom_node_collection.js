@@ -16,30 +16,27 @@ class DomNodeCollection {
   }
 
   append(argument) {
-    switch (argument) {
-      case DomNodeCollection:
-        this.HTMLElementArr.forEach(thisEl => {
-          arguments.HTMLElementArr.forEach(argEl => thisEl.innerHTML.appendChild(argEl.outerHTML));
-        });
-        break;
-      case HTMLElement:
-        this.HTMLElementArr.forEach(el => el.innerHTML.appendChild(argument.outerHTML));
-        break;
-      default:
-        this.HTMLElementArr.forEach(el => el.innerHTML.appendChild(argument));
+    if (argument instanceof DomNodeCollection) {
+      this.HTMLElementArr.forEach(thisEl => {
+        argument.HTMLElementArr.forEach(argEl => thisEl.innerHTML += argEl.outerHTML);
+      });
+    } else if (argument instanceof HTMLElement) {
+      this.HTMLElementArr.forEach(el => el.innerHTML += argument.outerHTML);
+    } else {
+      this.HTMLElementArr.forEach(el => el.innerHTML += argument);
     }
   }
 
-  attr(attrName, value) {
-    if (value === undefined) {
-      return this.HTMLElementArr.find(el => el.attributes.name === attrName).value;
-    } else if (value === null) {
+  attr(attrName, val) {
+    if (val === undefined) {
+      return this.HTMLElementArr[0].getAttribute(attrName);
+    } else if (val === null) {
       this.HTMLElementArr.forEach(el => {
         el.removeAttribute(attrName);
       })
     } else {
       this.HTMLElementArr.forEach(el => {
-        el.setAttribute(attrName, value);
+        el.setAttribute(attrName, val);
       });
     }
   }
@@ -61,6 +58,45 @@ class DomNodeCollection {
       }
       el.setAttribute('class', classes.join(' '));
     })
+  }
+
+  children() {
+    let children = [];
+    this.HTMLElementArr.forEach(el => {
+      children = children.concat(Array.from(el.children));
+    });
+
+    return new DomNodeCollection(children);
+  }
+
+  parent() {
+    let parents = [];
+
+    this.HTMLElementArr.forEach(el => {
+      if (!parents.includes(el.parentNode)) {
+        parents.push(el.parentNode);
+      }
+    });
+
+    return new DomNodeCollection(parents);
+  }
+
+  find(selector) {
+    let descendants = [];
+
+    this.HTMLElementArr.forEach(el => {
+      descendants = descendants.concat(Array.from(el.querySelectorAll(selector)));
+    });
+
+    return new DomNodeCollection(descendants);
+  }
+
+  remove() {
+    this.HTMLElementArr.forEach(el => {
+      el.remove();
+    })
+
+    this.HTMLElementArr = [];
   }
 }
 
