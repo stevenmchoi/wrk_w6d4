@@ -65,15 +65,35 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
+
+const DomNodeCollection = __webpack_require__(1)
 
 Window.prototype.$l = function(selector) {
-  let nodeList = document.body.querySelectorAll(selector);
-  nodeList = Array.from(nodeList);
-  return nodeList;
+  if (selector instanceof HTMLElement) {
+    return new DomNodeCollection([selector]);
+  } else {
+    let nodeList = document.body.querySelectorAll(selector);
+    nodeList = Array.from(nodeList);
+    return new DomNodeCollection(nodeList);
+  }
 };
 
 window.$l = $l;
+
+
+/***/ }),
+/* 1 */
+/***/ (function(module, exports) {
+
+class DomNodeCollection {
+  constructor(HTMLElementArr) {
+    this.HTMLElementArr = HTMLElementArr;
+  }
+
+}
+
+module.exports = DomNodeCollection;
 
 
 /***/ })
