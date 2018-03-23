@@ -186,6 +186,25 @@ class DomNodeCollection {
 
     this.HTMLElementArr = [];
   }
+
+  on(eventTypes, callback) {
+    let types = eventTypes.split(' ');
+    this.HTMLElementArr.forEach(el => {
+      types.forEach(type => {
+        el.addEventListener(type, callback);
+      });
+      el['callback'] = callback;
+    });
+  }
+
+  off(eventTypes) {
+    let types = eventTypes.split(' ');
+    this.HTMLElementArr.forEach(el => {
+      types.forEach(type => {
+        el.removeEventListener(type, el['callback']);
+      });
+    });
+  }
 }
 
 module.exports = DomNodeCollection;
