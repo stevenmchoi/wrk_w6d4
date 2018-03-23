@@ -1,6 +1,19 @@
 class DomNodeCollection {
-  constructor(HTMLElementArr) {
-    this.HTMLElementArr = HTMLElementArr;
+  constructor(argument) {
+    this.fnArr = [];
+
+    document.addEventListener("DOMContentLoaded", function(event) {
+      argument();
+    });
+    if (typeof f === 'function') {
+      if (document.readyState !== 'loading') {
+        argument()
+      } else {
+        this.fnArr.push(argument);
+      }
+    } else {
+      this.HTMLElementArr = argument;
+    }
   }
 
   html(string) {
